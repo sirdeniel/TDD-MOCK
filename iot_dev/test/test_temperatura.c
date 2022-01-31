@@ -34,3 +34,13 @@ void test_initializaton_but_dont_care_about_channel(void)
     adc_initialize_IgnoreArg_channel();
     temperature_initialize();
 }
+
+void test_initialization_with_pointer_to_config_struct (void)
+{
+    adc_config_t expected_config = {0};
+    expected_config.channel = 3;
+    expected_config.clock_rate = 40000000;
+    expected_config.sample_rate = 1000;
+    adc_initialize_configuration_Expect(&expected_config);
+    temperature_initialize_with_config();
+}
