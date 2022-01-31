@@ -27,3 +27,10 @@ void test_correct_channel_is_initialized(void)
     adc_initialize_Expect(3);
     temperature_initialize();
 }
+
+void test_initializaton_but_dont_care_about_channel(void)
+{
+    adc_initialize_Expect(0);
+    adc_initialize_IgnoreArg_channel();
+    temperature_initialize();
+}
