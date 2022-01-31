@@ -10,8 +10,14 @@ void tearDown(void)
 {
 }
 
-void test_temperatura_NeedToImplement(void)
+void test_temperature_over_limit(void)
 {
-    adc_get_sample_ExpectAndReturn(155);
+    adc_get_sample_ExpectAndReturn(151);
     TEST_ASSERT_TRUE(is_temperature_over_limit());
+}
+
+void test_temperature_not_over_limit(void)
+{
+    adc_get_sample_ExpectAndReturn(150);
+    TEST_ASSERT_FALSE(is_temperature_over_limit());
 }
