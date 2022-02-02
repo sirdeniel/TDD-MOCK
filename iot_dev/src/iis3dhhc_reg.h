@@ -30,7 +30,7 @@ extern "C" {
 #include <stdint.h>
 #include <stddef.h>
 #include <math.h>
-
+#include "sensor_def.h"
 /** @addtogroup IIS3DHHC
   * @{
   *

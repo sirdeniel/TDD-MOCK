@@ -18,7 +18,6 @@
   */
 
 #include "iis3dhhc_reg.h"
-#include "sensor_def.h"
 /**
   * @defgroup  IIS3DHHC
   * @brief     This file provides a set of functions needed to drive the
@@ -36,6 +35,28 @@
   *
   */
 
+/*!
+ * @brief This internal API is used to validate the device structure pointer for
+ * null conditions.
+ */
+static int32_t null_ptr_check(stmdev_ctx_t *ctx)
+{
+    int32_t rslt;
+
+    if ((ctx == NULL) || (ctx->read_reg == NULL) || (ctx->write_reg == NULL) || (ctx->handle == NULL))
+    {
+        /* Device structure pointer is not valid */
+        rslt = SENSOR_E_NULL_PTR;
+    }
+    else
+    {
+        /* Device structure is fine */
+        rslt = SENSOR_OK;
+    }
+
+    return rslt;
+}
+
 /**
   * @brief  Read generic device register
   *
@@ -50,9 +71,10 @@ int32_t iis3dhhc_read_reg(stmdev_ctx_t *ctx, uint8_t reg,
                           uint8_t *data,
                           uint16_t len)
 {
-  int32_t ret = SENSOR_E_NULL_PTR;
-  if(ctx->read_reg != NULL) 
-  ret = ctx->read_reg(ctx->handle, reg, data, len);
+  int32_t ret;
+  ret = null_ptr_check(ctx);
+  if(ret == SENSOR_OK)
+    ret = ctx->read_reg(ctx->handle, reg, data, len);
   return ret;
 }
 
@@ -372,7 +394,7 @@ int32_t iis3dhhc_xl_data_ovr_get(stmdev_ctx_t *ctx, uint8_t *val)
 int32_t iis3dhhc_device_id_get(stmdev_ctx_t *ctx, uint8_t *buff)
 {
   int32_t ret;
-
+  ret = null_ptr_check(ctx);
   ret = iis3dhhc_read_reg(ctx, IIS3DHHC_WHO_AM_I, buff, 1);
   return ret;
 }
@@ -1660,6 +1682,7 @@ int32_t iis3dhhc_auto_add_inc_get(stmdev_ctx_t *ctx, uint8_t *val)
 
   return ret;
 }
+
 
 /**
   * @}
