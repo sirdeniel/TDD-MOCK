@@ -18,7 +18,7 @@
   */
 
 #include "iis3dhhc_reg.h"
-
+#include "sensor_def.h"
 /**
   * @defgroup  IIS3DHHC
   * @brief     This file provides a set of functions needed to drive the
@@ -50,10 +50,9 @@ int32_t iis3dhhc_read_reg(stmdev_ctx_t *ctx, uint8_t reg,
                           uint8_t *data,
                           uint16_t len)
 {
-  int32_t ret;
-
+  int32_t ret = SENSOR_E_NULL_PTR;
+  if(ctx->read_reg != NULL) 
   ret = ctx->read_reg(ctx->handle, reg, data, len);
-
   return ret;
 }
 
@@ -375,7 +374,6 @@ int32_t iis3dhhc_device_id_get(stmdev_ctx_t *ctx, uint8_t *buff)
   int32_t ret;
 
   ret = iis3dhhc_read_reg(ctx, IIS3DHHC_WHO_AM_I, buff, 1);
-
   return ret;
 }
 
