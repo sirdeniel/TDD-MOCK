@@ -59,6 +59,8 @@
     - :ignore
     - :callback
     - :ignore_arg
+    - :return_thru_ptr
+    #ceedling clobber cada vez q agregas plugin correr eso.
   :treat_as:
     uint8:    HEX8
     uint16:   HEX16
