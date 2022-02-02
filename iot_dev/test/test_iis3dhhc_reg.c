@@ -1,4 +1,3 @@
-#ifdef TEST
 
 #include "unity.h"
 
@@ -12,9 +11,11 @@ void tearDown(void)
 {
 }
 
-void test_iis3dhhc_reg_NeedToImplement(void)
+void test_iis3dhhc_init_pointer_null(void)
 {
-    TEST_IGNORE_MESSAGE("Need to Implement iis3dhhc_reg");
+    stmdev_ctx_t dev_ctx;
+    static uint8_t whoamI;
+    whoamI = 0;
+    TEST_ASSERT_EQUAL_INT32(0,iis3dhhc_device_id_get(&dev_ctx, &whoamI));
 }
 
-#endif // TEST
