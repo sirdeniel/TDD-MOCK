@@ -322,8 +322,9 @@ int32_t iis3dhhc_acceleration_raw_get(stmdev_ctx_t *ctx, int16_t *val)
 {
   uint8_t buff[6];
   int32_t ret;
-
-  ret = iis3dhhc_read_reg(ctx, IIS3DHHC_OUT_X_L_XL, buff, 6);
+  ret = null_ptr_check(ctx);
+  if(ret == SENSOR_OK)
+    ret = iis3dhhc_read_reg(ctx, IIS3DHHC_OUT_X_L_XL, buff, 6);
   val[0] = (int16_t)buff[1];
   val[0] = (val[0] * 256) + (int16_t)buff[0];
   val[1] = (int16_t)buff[3];
@@ -396,7 +397,8 @@ int32_t iis3dhhc_device_id_get(stmdev_ctx_t *ctx, uint8_t *buff)
 {
   int32_t ret;
   ret = null_ptr_check(ctx);
-  ret = iis3dhhc_read_reg(ctx, IIS3DHHC_WHO_AM_I, buff, 1);
+  if(ret == SENSOR_OK)
+    ret = iis3dhhc_read_reg(ctx, IIS3DHHC_WHO_AM_I, buff, 1);
   return ret;
 }
 
@@ -413,14 +415,14 @@ int32_t iis3dhhc_reset_set(stmdev_ctx_t *ctx, uint8_t val)
   iis3dhhc_ctrl_reg1_t ctrl_reg1;
   int32_t ret;
 
-  ret = iis3dhhc_read_reg(ctx, IIS3DHHC_CTRL_REG1,
-                          (uint8_t *)&ctrl_reg1, 1);
+  ret = null_ptr_check(ctx);
+  if(ret == SENSOR_OK)
+    ret = iis3dhhc_read_reg(ctx, IIS3DHHC_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
 
   if (ret == 0)
   {
     ctrl_reg1.sw_reset = val;
-    ret = iis3dhhc_write_reg(ctx, IIS3DHHC_CTRL_REG1,
-                             (uint8_t *)&ctrl_reg1, 1);
+    ret = iis3dhhc_write_reg(ctx, IIS3DHHC_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
   }
 
   return ret;
@@ -438,9 +440,9 @@ int32_t iis3dhhc_reset_get(stmdev_ctx_t *ctx, uint8_t *val)
 {
   iis3dhhc_ctrl_reg1_t ctrl_reg1;
   int32_t ret;
-
-  ret = iis3dhhc_read_reg(ctx, IIS3DHHC_CTRL_REG1,
-                          (uint8_t *)&ctrl_reg1, 1);
+  ret = null_ptr_check(ctx);
+  if(ret == SENSOR_OK)
+    ret = iis3dhhc_read_reg(ctx, IIS3DHHC_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
   *val = ctrl_reg1.sw_reset;
 
   return ret;

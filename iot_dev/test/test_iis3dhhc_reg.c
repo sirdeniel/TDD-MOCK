@@ -93,3 +93,26 @@ void test_iis3dhhc_reset_get(void)
     TEST_ASSERT_EQUAL_INT32(SENSOR_OK,iis3dhhc_reset_get(&dev_ctx, &rst));
     TEST_ASSERT_TRUE(rst);
 }
+
+void test_iis3dhhc_acceleration_raw_get(void)
+{
+    stmdev_ctx_t dev_ctx = {0};
+    static uint8_t SENSOR_BUS;
+    uint8_t reg_out_x = IIS3DHHC_OUT_X_L_XL;
+    static int16_t data_raw_acceleration[3];
+    static int8_t mock_buff_raw_get[6]={0x00,0x01,0x00,0x01,0x00,0x01};
+    static int8_t mock_buff_read[6]={0};
+
+    dev_ctx.read_reg = platform_read;
+    dev_ctx.write_reg = platform_write;
+    dev_ctx.handle = &SENSOR_BUS;
+
+    ezm_spi_read_ExpectAndReturn(&app_sensor,reg_out_x,NULL,6,SENSOR_OK);
+    ezm_spi_read_IgnoreArg_data();
+    ezm_spi_read_ReturnArrayThruPtr_data(mock_buff_raw_get,6);
+
+    TEST_ASSERT_EQUAL_INT32(SENSOR_OK,iis3dhhc_acceleration_raw_get(&dev_ctx, data_raw_acceleration));
+    TEST_ASSERT_EQUAL_UINT16(256,data_raw_acceleration[0]);
+    TEST_ASSERT_EQUAL_UINT16(256,data_raw_acceleration[1]);
+    TEST_ASSERT_EQUAL_UINT16(256,data_raw_acceleration[2]);
+}
