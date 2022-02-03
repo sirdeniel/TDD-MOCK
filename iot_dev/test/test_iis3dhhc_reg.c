@@ -73,3 +73,23 @@ void test_iis3dhhc_init_with_reset_set(void)
     ezm_spi_write_IgnoreArg_data();
     TEST_ASSERT_EQUAL_INT32(SENSOR_OK,iis3dhhc_reset_set(&dev_ctx, PROPERTY_ENABLE));
 }
+
+void test_iis3dhhc_reset_get(void)
+{
+    stmdev_ctx_t dev_ctx = {0};
+    static uint8_t rst = 20;
+    static uint8_t SENSOR_BUS;
+    uint8_t reg_ctrl_reg1 = IIS3DHHC_CTRL_REG1;
+    uint8_t data_ctrl_reg1 = 0x04;//el tercer bit es reset
+
+    dev_ctx.read_reg = platform_read;
+    dev_ctx.write_reg = platform_write;
+    dev_ctx.handle = &SENSOR_BUS;
+
+    ezm_spi_read_ExpectAndReturn(&app_sensor,reg_ctrl_reg1,&data_ctrl_reg1,1,SENSOR_OK);
+    ezm_spi_read_IgnoreArg_data();
+    ezm_spi_read_ReturnThruPtr_data(&data_ctrl_reg1);
+
+    TEST_ASSERT_EQUAL_INT32(SENSOR_OK,iis3dhhc_reset_get(&dev_ctx, &rst));
+    TEST_ASSERT_TRUE(rst);
+}
