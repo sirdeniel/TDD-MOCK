@@ -93,8 +93,9 @@ int32_t iis3dhhc_write_reg(stmdev_ctx_t *ctx, uint8_t reg,
                            uint16_t len)
 {
   int32_t ret;
-
-  ret = ctx->write_reg(ctx->handle, reg, data, len);
+  ret = null_ptr_check(ctx);
+  if(ret == SENSOR_OK)
+    ret = ctx->write_reg(ctx->handle, reg, data, len);
 
   return ret;
 }

@@ -20,10 +20,12 @@ static int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp,
     return resp;
 }
 
-static int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp,
+static int32_t platform_write(void *handle, uint8_t reg, uint8_t *bufp,
                               uint16_t len)
 {
-    return 0;
+    int32_t resp = 0;
+    resp = ezm_spi_write(&app_sensor,reg, bufp, len);
+    return resp;
 }
 
 void test_iis3dhhc_init_pointer_null(void)
@@ -45,9 +47,29 @@ void test_iis3dhhc_init_pointer_ok(void)
     dev_ctx.write_reg = platform_write;
     dev_ctx.handle = &SENSOR_BUS;
 
-    ezm_spi_read_ExpectAndReturn(&app_sensor,reg_whoamI_mock,&whoamI_mock,1,SENSOR_OK);//&app_sensor,IIS3DHHC_WHO_AM_I,&whoamI_mock,1,0X0f);
+    ezm_spi_read_ExpectAndReturn(&app_sensor,reg_whoamI_mock,&whoamI_mock,1,SENSOR_OK);
     ezm_spi_read_IgnoreArg_data();
     ezm_spi_read_ReturnThruPtr_data(&whoamI_mock);
     TEST_ASSERT_EQUAL_INT32(SENSOR_OK,iis3dhhc_device_id_get(&dev_ctx, &whoamI));
     TEST_ASSERT_EQUAL_HEX(IIS3DHHC_ID,whoamI);
+}
+
+void test_iis3dhhc_init_with_reset_set(void)
+{
+    stmdev_ctx_t dev_ctx = {0};
+    static uint8_t SENSOR_BUS;
+    uint8_t reg_ctrl_reg1 = IIS3DHHC_CTRL_REG1;
+    uint8_t data_ctrl_reg1 = 0x00;
+
+    dev_ctx.read_reg = platform_read;
+    dev_ctx.write_reg = platform_write;
+    dev_ctx.handle = &SENSOR_BUS;
+
+    ezm_spi_read_ExpectAndReturn(&app_sensor,reg_ctrl_reg1,&data_ctrl_reg1,1,SENSOR_OK);
+    ezm_spi_read_IgnoreArg_data();
+    ezm_spi_read_ReturnThruPtr_data(&data_ctrl_reg1);
+
+    ezm_spi_write_ExpectAndReturn(&app_sensor,reg_ctrl_reg1,&data_ctrl_reg1,1,SENSOR_OK);
+    ezm_spi_write_IgnoreArg_data();
+    TEST_ASSERT_EQUAL_INT32(SENSOR_OK,iis3dhhc_reset_set(&dev_ctx, PROPERTY_ENABLE));
 }
