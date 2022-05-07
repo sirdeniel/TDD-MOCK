@@ -35,8 +35,8 @@ void tearDown(void)
 void test_asm330lhhx_init(void)
 {
     stmdev_ctx_t dev_ctx;
-    // dev_ctx.write_reg = platform_write;
-    // dev_ctx.read_reg = platform_read;
+    dev_ctx.write_reg = platform_write;
+    dev_ctx.read_reg = platform_read;
     static uint8_t whoamI;
     whoamI = 0;
     // TEST_IGNORE_MESSAGE("Need to Implement asm330lhhx_reg");
